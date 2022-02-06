@@ -1,4 +1,12 @@
 <?php
+
+session_start();
+
+if (!isset($_SESSION['login'])) {
+  header("Location: login.php");
+  exit;
+}
+
 require 'functions.php';
 $mahasiswa = query("SELECT * FROM mahasiswa");
 ?>
@@ -14,16 +22,17 @@ $mahasiswa = query("SELECT * FROM mahasiswa");
 </head>
 
 <body>
+
+  <a href="logout.php">Logout</a> 
   <h3>Daftar Mahasiswa</h3>
 
+  <a href="tambah.php">Tambah Data Mahasiswa</a>
+  <br><br>
   <table border="1" cellpadding="10" cellspacing="0">
     <tr>
       <th>#</th>
       <th>Gambar</th>
-      <th>NIM</th>
       <th>Nama</th>
-      <th>Email</th>
-      <th>Jurusan</th>
       <th>Aksi</th>
     </tr>
     <?php $i = 1;
@@ -31,16 +40,12 @@ $mahasiswa = query("SELECT * FROM mahasiswa");
       <tr>
         <td><?= $i++; ?></td>
         <td><img src="img/<?= $m['gambar']; ?>" width="60px"></td>
-        <td><?= $m['nim']; ?></td>
         <td><?= $m['nama']; ?></td>
-        <td><?= $m['email']; ?></td>
-        <td><?= $m['Jurusan']; ?></td>
         <td>
-          <a href="">Ubah</a> | <a href="">Hapus</a>
+          <a href="detail.php?id=<?= $m['id']; ?>">Lihat Detail</a>
         </td>
       </tr>
     <?php endforeach; ?>
-  </table>
 </body>
 
 </html>

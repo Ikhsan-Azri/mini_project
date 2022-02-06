@@ -1,11 +1,18 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['login'])) {
+  header("Location: login.php");
+  exit;
+}
+
 require 'functions.php';
 
 // Ambil id dari URL  
 $id = $_GET['id'];
 
 // query mahasiswa berdasarkan id
-$m = query("SELECT *FROM mahasiswa WHERE  id = $id")[0];
+$m = query("SELECT *FROM mahasiswa WHERE  id = $id");
 ?>
 
 <!DOCTYPE html>
@@ -26,8 +33,8 @@ $m = query("SELECT *FROM mahasiswa WHERE  id = $id")[0];
     <li>Nama :<?= $m['nama']; ?></li>
     <li>Email :<?= $m['email']; ?></li>
     <li>Jurusan :<?= $m['Jurusan']; ?></li>
-    <li><a href="">Ubah</a> | <a href="">Hapus</a></li>
-    <li><a href="latihan3.php">Kembali ke daftar mahasiswa</a></li>
+    <li><a href="ubah.php?id=<?= $m['id']; ?>">Ubah</a> | <a href="hapus.php?id=<?= $m['id']; ?>" onclick="return confirm ('Apakah Anda yakin!!!');">Hapus</a></li>
+    <li><a href="index.php">Kembali ke daftar mahasiswa</a></li>
   </ul>
 </body>
 

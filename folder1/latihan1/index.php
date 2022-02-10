@@ -10,10 +10,10 @@ if (!isset($_SESSION['login'])) {
 require 'functions.php';
 $mahasiswa = query("SELECT * FROM mahasiswa");
 
-// Ketika tombol cari diklik
-if(isset($_POST['cari'])){
-  $mahasiswa = cari($_POST['keyword']);
-}
+// // Ketika tombol cari diklik
+// if(isset($_POST['cari'])){
+//   $mahasiswa = cari($_POST['keyword']);
+// }
 
 ?>
 
@@ -44,11 +44,20 @@ if(isset($_POST['cari'])){
   <div class="container">
     <table border="1" cellpadding="10" cellspacing="0">
       <tr>
-        <th>#</th>
+        <th>NO</th>
         <th>Gambar</th>
         <th>Nama</th>
         <th>Aksi</th>
       </tr>
+
+      <?php if (empty($mahasiswa)) : ?>
+        <tr>
+          <td colspan="4">
+            <p>Data mahasiswa kosong!!!</p>
+          </td>
+        </tr>
+      <?php endif; ?>
+
       <?php $i = 1;
       foreach ($mahasiswa as $m) : ?>
         <tr>

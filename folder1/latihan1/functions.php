@@ -64,9 +64,11 @@ function query($query)
 {
   $conn = koneksi();
   $result = mysqli_query($conn, $query);
-  if (mysqli_num_rows($result) == 1) {
-    return mysqli_fetch_assoc($result);
-  }
+
+
+  // if (mysqli_num_rows($result) == 1) {
+  //   return mysqli_fetch_assoc($result);
+  // }
 
   $rows = [];
   while ($row = mysqli_fetch_assoc($result)) {
@@ -106,13 +108,15 @@ function hapus($id)
   $conn = koneksi();
 
   // menghapus gambar difolder
-  $mhs = query("SELECT * FROM mahasiswa WHERE id = $id");
+  $mhs = query("SELECT * FROM mahasiswa WHERE id = $id")[0];
   if ($mhs['gambar'] != 'user.png') {
     unlink('img/' . $mhs['gambar']);
   }
   mysqli_query($conn, "DELETE FROM mahasiswa WHERE id = $id") or die(mysqli_error($conn));
   return mysqli_affected_rows($conn);
 }
+
+
 
 function ubah($data)
 {
@@ -124,13 +128,19 @@ function ubah($data)
   $email = htmlspecialchars($data['email']);
   $gambar_lama = htmlspecialchars($data['gambar_lama']);
 
+
   $gambar = upload();
   if (!$gambar) {
     return false;
   }
 
+
+  // jika gambar tidak diubah
   if ($gambar == 'user.png') {
     $gambar = $gambar_lama;
+  } else {
+    if ($gambar_lama != 'user.png')
+      unlink('img/' . $gambar_lama);
   }
 
   $query = "UPDATE 
@@ -156,15 +166,15 @@ function login($data)
   $username = htmlspecialchars($data['username']);
   $password = htmlspecialchars($data['password']);
 
-  if ($user = query("SELECT * FROM user WHERE username = '$username'")) {
+  if ($user = query("SELECT * FROM user WHERE username = '$username' && password = '$password'")) {
     // Cek password
-    if (password_verify($password, $user['password'])) {
-      // Set SESSION
-      $_SESSION['login'] = true;
+    // if (password_verify($password, $user['password'])) {
+    // Set SESSION
+    $_SESSION['login'] = true;
 
-      header("Location: index.php");
-      exit;
-    }
+    header("Location: index.php");
+    exit;
+    // }
   }
   return [
     'error' => true,
@@ -239,5 +249,5 @@ function cari($keyword)
             nama LIKE '%$keyword%' OR
             nim LIKE '%$keyword%'
           ";
-  $result = mysqli_query($conn, $query);
+  return query($query);
 }
